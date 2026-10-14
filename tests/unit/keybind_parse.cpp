@@ -756,6 +756,12 @@ UMBRIEL_TEST(payloadAlternativeMatchesTheDeclaredArgKind) {
     case ActionArgKind::WindowId:
       input += ":abc";
       break;
+    case ActionArgKind::WindowMoveTo:
+      input += ":center/1/1";
+      break;
+    case ActionArgKind::WindowMoveBy:
+      input += ":1/1";
+      break;
     }
     CHECK(parseAction(input, bind));
 
@@ -813,6 +819,12 @@ UMBRIEL_TEST(payloadAlternativeMatchesTheDeclaredArgKind) {
       break;
     case ActionArgKind::SdrWhite:
       CHECK(umbriel::payloadIf<umbriel::SdrWhiteArg>(bind) != nullptr);
+      break;
+    case ActionArgKind::WindowMoveTo:
+      CHECK(umbriel::payloadIf<umbriel::WindowMoveToArg>(bind) != nullptr);
+      break;
+    case ActionArgKind::WindowMoveBy:
+      CHECK(umbriel::payloadIf<umbriel::WindowMoveByArg>(bind) != nullptr);
       break;
     }
   }
@@ -882,6 +894,12 @@ UMBRIEL_TEST(everyActionSpecRoundTripsThroughParseAction) {
       break;
     case ActionArgKind::WindowId:
       input += ":abc";
+      break;
+    case ActionArgKind::WindowMoveTo:
+      input += ":center/1/1";
+      break;
+    case ActionArgKind::WindowMoveBy:
+      input += ":1/1";
       break;
     }
     if (!parseAction(input, bind)) {
@@ -1030,6 +1048,10 @@ UMBRIEL_TEST(everyAdvertisedActionParsesWithItsDeclaredArgument) {
       return ":skip-confirmation";
     case ActionArgKind::SdrWhite:
       return ":200/DP-1";
+    case ActionArgKind::WindowMoveTo:
+      return ":center/1/1";
+    case ActionArgKind::WindowMoveBy:
+      return ":1/1";
     }
     return {};
   };
@@ -1078,6 +1100,10 @@ UMBRIEL_TEST(everyAdvertisedActionParsesWithItsDeclaredArgument) {
       return "<nits>[/<output>]";
     case ActionArgKind::SkipConfirmation:
       return "[skip-confirmation]";
+    case ActionArgKind::WindowMoveTo:
+      return "<anchor>/<x>/<y>[/<window-id>]";
+    case ActionArgKind::WindowMoveBy:
+      return "<delta-x>/<delta-y>[/<window-id>]";
     }
     return "";
   };
